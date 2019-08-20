@@ -46,7 +46,7 @@ namespace Refactoring.Services
 
             var response = client.Execute<T>(request);
 
-            if (response.StatusCode == HttpStatusCode.OK && null != response.Data) // If the remote server is unreachable, then response.Data will be null
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 LogResult(response);
 
@@ -58,12 +58,12 @@ namespace Refactoring.Services
 
         private void LogResult<T>(IRestResponse<T> response) where T : new()
         {
-            Console.WriteLine($"Result was {response.StatusCode}");
+            Logger.LogMessage($"Result was {response.StatusCode}");
         }
 
         private void LogRequest<T>(IRestRequest request) where T : new()
         {
-            Console.WriteLine($"Requested {request.Method} at {request.Resource}");
+            Logger.LogMessage($"Requested {request.Method} at {request.Resource}");
         }
     }
 }

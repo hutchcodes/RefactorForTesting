@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Refactoring.Logging
 {
-    class ILogEntry
+    interface ILogger
     {
+        void LogMessage(string message);
     }
 }
