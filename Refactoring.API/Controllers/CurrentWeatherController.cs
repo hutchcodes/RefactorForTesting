@@ -78,7 +78,7 @@ namespace Refactoring.API.Controllers
                         PrecipitationChance = 40,
                         SkyConditions = "Partly Cloudy",
                         WindDirection = "SE",
-                        WindSpeed = new Random().Next(0, 25)
+                        WindSpeed = new Random(DateTime.Now.Millisecond).Next(0, 25)
                     }
                 },
                 {

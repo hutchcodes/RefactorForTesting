@@ -1,26 +1,26 @@
 ﻿using Refactoring.Logging;
 using RestSharp;
-using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace Refactoring.Services
+namespace Refactoring.Helpers
 {
-    abstract class WebServiceBase
+    class HttpHelper : IHttpHelper
     {
-        private string _baseUrl;
-        public WebServiceBase(string baseUr)
+        public Uri BaseUrl { get; set; }
+
+        public HttpHelper(string baseUrl)
         {
-            _baseUrl = baseUr;
+            BaseUrl = string.IsNullOrEmpty(baseUrl) ? null : new Uri(baseUrl);
         }
 
         private IRestClient GetRestClient()
         {
             return new RestClient
             {
-                BaseUrl = new Uri(_baseUrl),
+                BaseUrl = BaseUrl
             };
         }
 

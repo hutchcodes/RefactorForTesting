@@ -1,5 +1,6 @@
 ﻿using Refactoring.Models;
 using Refactoring.Services;
+using Refactoring.ViewModel;
 using System;
 using System.Collections.Generic;
 
@@ -15,23 +16,10 @@ namespace Refactoring
 
             var zipCodes = input.Split(' ');
 
-            var weathers = GetWeathers(zipCodes);
+            var weatherVM = new ViewWeatherVM();
+            var weathers = weatherVM.GetWeathers(zipCodes);
 
             WriteWeathers(weathers);
-
-        }
-
-        static List<Weather> GetWeathers(string[] zipCodes)
-        {
-            var weatherService = new WeatherService();
-            var weathers =  new List<Weather>();
-
-            foreach(var zipCode in zipCodes)
-            {
-                var weather = weatherService.GetWeatherForZip(zipCode);
-            }
-
-            return weathers;
         }
 
         private static void WriteWeathers(List<Weather> weathers)
@@ -39,8 +27,9 @@ namespace Refactoring
             foreach(var w in weathers)
             {
                 Console.WriteLine($"ZipCode: {w.ZipCode}");
-                Console.WriteLine($"/t {w.TemperaturInFahrenheit}F/{w.TemperaturInCelsius}C");
-                Console.WriteLine($"ZipCode: {w.SkyConditions}");
+                Console.WriteLine($"\t {w.TemperaturInFahrenheit}F/{w.TemperaturInCelsius}C");
+                Console.WriteLine($"\t {w.SkyConditions}");
+                Console.WriteLine($"\t Winds {w.WindDirection} {w.WindSpeed} MPH");
                 Console.WriteLine();
             }
         }
