@@ -22,7 +22,6 @@ namespace Refactoring.Tests.Services
             Assert.AreEqual("04103", weather.ZipCode);
             Assert.AreEqual(68, weather.TemperaturInFahrenheit);
             //Assert.AreEqual(13, weather.WindSpeed);
-
         }
 
 
@@ -45,7 +44,7 @@ namespace Refactoring.Tests.Services
 
 
 
-
+        [Test]
         public void Should_get_weather_DI()
         {
             IRestRequest myRequest = null;
@@ -55,13 +54,37 @@ namespace Refactoring.Tests.Services
                 .Returns(() => new Weather { ZipCode = "12345", TemperaturInFahrenheit = 68, WindSpeed = 8 })
                 .OccursOnce();
 
-            //var ws = new WeatherService(httpHelperMock);
+            Mock.Arrange(() => httpHelperMock.GetRestRequest(Arg.AnyString, Arg.IsAny<Method>(), Arg.IsAny<DataFormat>()))
+                .Returns((string resource, Method method, DataFormat dataFormat) =>
+                {
+                    var httpHelper = new HttpHelper("http://Foo/");
+                    return httpHelper.GetRestRequest(resource, method, dataFormat);
+                });
 
-            //var weather = ws.GetWeatherForZip("04103");
+            var ws = new WeatherService(httpHelperMock);
 
-            //Assert.AreEqual("12345", weather.ZipCode);
-            //Assert.AreEqual(68, weather.TemperaturInFahrenheit);
-            //Assert.AreEqual(8, weather.WindSpeed);
+            var weather = ws.GetWeatherForZip("04103");
+
+            Assert.AreEqual("12345", weather.ZipCode);
+            Assert.AreEqual(68, weather.TemperaturInFahrenheit);
+            Assert.AreEqual(8, weather.WindSpeed);
+
+            Assert.AreEqual("GET", myRequest.Method.ToString());
+            Assert.AreEqual("CurrentWeather/04103", myRequest.Resource);
+        }
+
+        [Test]
+        public void Should_throw_exception()
+        {
+            IRestRequest myRequest = null;
+            var httpHelperMock = Mock.Create<IHttpHelper>();
+            Mock.Arrange(() => httpHelperMock.Execute<Weather>(Arg.IsAny<IRestRequest>()))
+                .OccursNever();
+
+            var ws = new WeatherService(httpHelperMock);
+
+            Assert.Throws<ArgumentException>(() => ws.GetWeatherForZip("00000"));
+
         }
     }
 }

@@ -3,7 +3,7 @@ using RestSharp;
 
 namespace Refactoring.Helpers
 {
-    interface IHttpHelper
+    public interface IHttpHelper
     {
         Uri BaseUrl { get; set; }
 

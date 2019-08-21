@@ -1,19 +1,28 @@
-﻿using Refactoring.Models;
+﻿using Refactoring.Helpers;
+using Refactoring.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Refactoring.Services
 {
-    internal class WeatherService : WebServiceBase 
+    internal class WeatherService : IWeatherService
     {
-        public WeatherService() : base("https://localhost:44359/api") { }
+        IHttpHelper _httpHelper;
+        public WeatherService(IHttpHelper httpHelper = null)
+        {
+            _httpHelper = httpHelper ?? new HttpHelper("https://localhost:44359/api");
+        }
 
         public Weather GetWeatherForZip(string zipCode)
         {
-            var request = this.GetRestRequest($"CurrentWeather/{zipCode}", RestSharp.Method.GET);
+            if (zipCode == "00000")
+            {
+                throw new ArgumentException("Foo");
+            }
+            var request = _httpHelper.GetRestRequest($"CurrentWeather/{zipCode}", RestSharp.Method.GET);
 
-            var weather = Execute<Weather>(request);
+            var weather = _httpHelper.Execute<Weather>(request);
 
             return weather;
         }

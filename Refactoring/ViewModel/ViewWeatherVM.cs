@@ -8,14 +8,18 @@ namespace Refactoring.ViewModel
 {
     public class ViewWeatherVM
     {
+        private IWeatherService _iWeatherService;
+        public ViewWeatherVM(IWeatherService weatherService = null)
+        {
+            _iWeatherService = weatherService ?? new WeatherService();
+        }
         public List<Weather> GetWeathers(string[] zipCodes)
         {
-            var weatherService = new WeatherService();
             var weathers = new List<Weather>();
 
             foreach (var zipCode in zipCodes)
             {
-                var weather = weatherService.GetWeatherForZip(zipCode);
+                var weather = _iWeatherService.GetWeatherForZip(zipCode);
                 weathers.Add(weather);
             }
 
